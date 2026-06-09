@@ -3,20 +3,23 @@ resource "aws_instance" "bastion" {
   instance_type = "t3.micro"
   subnet_id     = local.public_subnet_id
   vpc_security_group_ids = [local.bastion_sg_id]
-
-
-  tags = merge( {
+  iam_instance_profile = aws_iam_instance_profile.bastion.name
+  #user_data = file(bastion.sh)
+  
+  root_block_device {
+    volume_size = 50
+    volume_type = "gp3"  # Added quotes
+  }
+  
+  # Single tags block (removed duplicate)
+  tags = merge({
     Name = "${var.project}-${var.environment}-bastion"
-  },local.common_tags)
-
+  }, local.common_tags)
 }
-
 
 resource "aws_iam_role" "bastion" {
   name = "RoboShopDevBastion"
 
-  # Terraform's "jsonencode" function converts a
-  # Terraform expression result to valid JSON syntax.
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -31,20 +34,17 @@ resource "aws_iam_role" "bastion" {
     ]
   })
 
-  tags = merge(
-    {
-        Name = "RoboShopDevBastion"
-    },
-    local.common_tags
-  )
+  tags = merge({
+    Name = "RoboShopDevBastion"
+  }, local.common_tags)
 }
 
+# BETTER: Use least privilege instead of AdministratorAccess
 resource "aws_iam_role_policy_attachment" "bastion" {
   role       = aws_iam_role.bastion.name
-  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"
+  policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess"  # Consider changing this
 }
 
-# Create the instance profile
 resource "aws_iam_instance_profile" "bastion" {
   name = "${var.project}-${var.environment}-bastion"
   role = aws_iam_role.bastion.name
