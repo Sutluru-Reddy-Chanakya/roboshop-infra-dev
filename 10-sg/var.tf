@@ -1,25 +1,25 @@
 variable "project" {
     default = "roboshop"
-  
 }
 
 variable "environment" {
     default = "dev"
-  
 }
 
 
-# variables.tf (in root module directory)
-variable "sg_name" {
-  type = list(string)
+
+variable "sg_names" {
+  description = "List of security group names"
+  type        = list(string)
   default = [
-    # Database
+    #DATABASE
     "mongodb", "redis", "mysql", "rabbitmq",
-    
-    # BACKEND
-    "catalogue", "user", "cart", "shipping", "payment",
-    
-    # Load Balancers & Frontend
-    "backend_alb", "frontend", "frontend_alb", "bastion"
+    #BACKEND
+    "catalogue", "cart", "user", "shipping", "payment",
+    "backend_alb",
+    #APPLICATION
+    "frontend",
+    "frontend_alb",
+    "bastion"
   ]
 }
