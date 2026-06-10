@@ -1,23 +1,19 @@
 resource "aws_instance" "mongodb" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id     = local.db_subnet_id
+  ami                    = local.ami_id
+  instance_type          = "t3.micro"
+  subnet_id              = local.db_subnet_id
   vpc_security_group_ids = [local.mongodb_sg_id]
 
-
-  tags = merge( {
+  tags = merge({
     Name = "${var.project}-${var.environment}-mongodb"
-  },local.common_tags)
-
+  }, local.common_tags)
 }
 
+# Optional: Remove this terraform_data block if you don't need Ansible provisioning
 resource "terraform_data" "bootstrap" {
-  triggers_replace = [
-    aws_instance.mongodb.id,
-    
-  ]
+  triggers_replace = [aws_instance.mongodb.id]
 
-    connection {
+  connection {
     type     = "ssh"
     user     = "ec2-user"
     password = "DevOps321"
@@ -25,15 +21,14 @@ resource "terraform_data" "bootstrap" {
   }
 
   provisioner "file" {
-    source = "bootstrap.sh"
-    destination = "/tmp/bootstrap.sh mongodb"
-    
+    source      = "${path.module}/bootstrap.sh"
+    destination = "/tmp/bootstrap.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-        "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh mongodb ${var.environment}"
+      "chmod +x /tmp/bootstrap.sh",
+      "sudo /tmp/bootstrap.sh mongodb ${var.environment}"
     ]
   }
 }
