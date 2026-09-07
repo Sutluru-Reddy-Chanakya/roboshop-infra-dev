@@ -121,22 +121,7 @@ resource "terraform_data" "bootstrap_mysql" {
 
 
 
-resource "aws_instance" "rabbitmq" {
-  ami           = local.ami_id
-  instance_type = "t3.micro"
-  subnet_id = local.db_subnet_ids
-  vpc_security_group_ids = [local.rabbitmq_sg_id]
-  iam_instance_profile = aws_iam_instance_profile.mysql.name
-
-  tags = merge(
-    {
-        Name = "${var.project}-${var.env}-rabbitmq"
-    },
-    local.common_tags
-  )
-}
-
-resource "terraform_data" "bootstrap_rabbitmq" {
+resource "terraform_data" "rabbitmq" {
   triggers_replace = [
     aws_instance.rabbitmq.id
   ]
