@@ -24,3 +24,11 @@ resource "aws_iam_role" "mysql" {
     local.common_tags
   )
 }
+
+
+resource "aws_iam_policy" "mysql_policy" {
+  name        = "s3-access-policy"
+  
+  description = "A policy to allow EC2 instances to access SSM Parameter Store for MySQL root password"
+  policy = file("mysql-iam-policy.json")
+}
