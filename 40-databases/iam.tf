@@ -31,7 +31,7 @@ resource "aws_iam_policy" "mysql_policy" {
   
   description = "A policy to allow EC2 instances to access SSM Parameter Store for MySQL root password"
   policy = templatefile("mysql-iam-policy.json", {
-    environment = var.env
+    env = var.env
   })
 }
 
