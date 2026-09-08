@@ -100,7 +100,7 @@ resource "aws_security_group_rule" "catalogue_accepting_from_bastion" {
 resource "aws_security_group_rule" "catalogue_accepting_from_backend_alb" {
   type              = "ingress"
   from_port         = 8080
-  to_port           = 80
+  to_port           = 8080
   protocol          = "tcp"
   source_security_group_id = local.backend_alb_sg_id
 
