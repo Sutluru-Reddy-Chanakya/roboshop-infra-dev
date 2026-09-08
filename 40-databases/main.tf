@@ -32,7 +32,7 @@ resource "terraform_data" "mongodb" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh mongodb"
+        "sudo sh /tmp/bootstrap.sh mongodb ${var.env}"
     ]
   }
 }
@@ -71,12 +71,10 @@ resource "terraform_data" "bootstrap_redis" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh redis"
+        "sudo sh /tmp/bootstrap.sh redis ${var.env}"
     ]
   }
 }
-
-
 
 resource "aws_instance" "mysql" {
   ami           = local.ami_id
@@ -93,7 +91,7 @@ resource "aws_instance" "mysql" {
   )
 }
 
-resource "terraform_data" "bootstrap_mysql" {
+resource "terraform_data" "mysql" {
   triggers_replace = [
     aws_instance.mysql.id
   ]
@@ -113,11 +111,10 @@ resource "terraform_data" "bootstrap_mysql" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh mysql"
+        "sudo sh /tmp/bootstrap.sh mysql ${var.env}"
     ]
   }
 }
-
 
 resource "aws_instance" "rabbitmq" {
   ami           = local.ami_id
@@ -153,7 +150,7 @@ resource "terraform_data" "rabbitmq" {
   provisioner "remote-exec" {
     inline = [
         "chmod +x /tmp/bootstrap.sh",
-        "sudo sh /tmp/bootstrap.sh rabbitmq"
+        "sudo sh /tmp/bootstrap.sh rabbitmq ${var.env}"
     ]
   }
 }
