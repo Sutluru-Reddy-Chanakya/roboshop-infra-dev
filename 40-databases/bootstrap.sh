@@ -8,7 +8,7 @@ dnf install ansible -y
 cd /home/ec2-user
 
 # Use the correct repository (with underscore)
-git clone https://github.com/Sutluru-Reddy-Chanakya/Ansible_Roboshop_roles.git
+git clone https://github.com/Sutluru-Reddy-Chanakya/Ansible-Roboshop-roles-tf.git
 cd Ansible_Roboshop_roles
 git pull
 
